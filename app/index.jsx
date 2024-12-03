@@ -10,10 +10,29 @@ import {
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../constants";
-import CustomButton from "../components/CustomButton";
 import { Redirect, router } from "expo-router";
+import { Pressable } from "react-native";
+import { useCameraPermissions } from "expo-camera";
+import { useNavigation } from "expo-router";
 
 export default function App() {
+  const [permission, requestPermission] = useCameraPermissions();
+  const navigation = useNavigation();
+
+  const handlePress = async () => {
+    if (!permission || !permission.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        Alert.alert(
+          "Permission Denied",
+          "Camera access is required to scan codes."
+        );
+        return;
+      }
+    }
+    router.push("/scanner");
+  };
+
   return (
     <SafeAreaView className=" h-full">
       <ImageBackground source={require("../assets/gplay.png")}>
@@ -75,11 +94,22 @@ export default function App() {
                 • <Text style={styles.body}>Evidovať tankovanie</Text>
               </Text>
             </View>
-            <CustomButton
-              title="SKENOVAŤ"
-              handlePress={() => router.push("/sign-in")}
-              containerStyles={{ width: "100%", marginTop: "7%" }}
-            />
+
+            <View style={{ gap: 20, padding: 20 }}>
+              <Pressable
+                onPress={handlePress}
+                style={[
+                  styles.ourbutton,
+                  {
+                    backgroundColor: permission?.granted ? "#344E41" : "gray",
+                  },
+                ]}
+              >
+                <Text className="text-white font-psemibold text-lg">
+                  {permission?.granted ? "SKENOVAŤ" : "Požiadať o povolenie"}
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </ScrollView>
         <StatusBar style="light" backgroundColor="#161622" />
@@ -113,5 +143,14 @@ const styles = StyleSheet.create({
   bullet: {
     fontSize: 16,
     marginBottom: 3,
+  },
+
+  ourbutton: {
+    borderRadius: 12, // 'rounded-xl' for large radius (adjust as necessary)
+    minHeight: 62, // 'min-h-[62px]'
+    justifyContent: "center", // 'justify-center'
+    alignItems: "center", // 'items-center'
+    width: "100%",
+    marginTop: "7%",
   },
 });
