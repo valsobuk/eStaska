@@ -15,14 +15,14 @@ const CustomButton = ({
       onPress={handlePress}
       activeOpacity={0.7}
     >
-      <Text className="text-primary font-psemibold text-lg">{title}</Text>
+      <Text className="text-white font-psemibold text-lg">{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FF9C01", // Assuming 'bg-secondary' corresponds to the color you defined
+    backgroundColor: "#344E41", // Assuming 'bg-secondary' corresponds to the color you defined
     borderRadius: 12, // 'rounded-xl' for large radius (adjust as necessary)
     minHeight: 62, // 'min-h-[62px]'
     justifyContent: "center", // 'justify-center'
