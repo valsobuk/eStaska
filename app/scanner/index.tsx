@@ -1,5 +1,5 @@
 import { Camera, CameraView } from "expo-camera";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import {
   AppState,
   Linking,
@@ -8,7 +8,7 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
-
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef } from "react";
 
 export default function Home() {
@@ -39,16 +39,24 @@ export default function Home() {
           headerShown: false,
         }}
       />
+
       {Platform.OS === "android" ? <StatusBar hidden /> : null}
       <CameraView
         style={StyleSheet.absoluteFillObject}
         facing="back"
         onBarcodeScanned={({ data }) => {
           if (data && !qrLock.current) {
+            console.log(data);
             qrLock.current = true;
-            setTimeout(async () => {
-              await Linking.openURL(data);
-            }, 500);
+
+            const parsedData = JSON.parse(data);
+            const { name, surname } = parsedData;
+
+            router.push(`../form?name=${name}&surname=${surname}`);
+
+            setTimeout(() => {
+              qrLock.current = false;
+            }, 1000);
           }
         }}
       />
