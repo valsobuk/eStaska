@@ -1,6 +1,5 @@
-import { View, Text, ScrollView, Image, Alert } from "react-native";
+import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 import { Link, router } from "expo-router";
-import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { images } from "../../constants";
@@ -8,8 +7,11 @@ import { createUser } from "../../lib/appwrite";
 import FormField from "../../components/FormField";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignUp = () => {
+  const { setUser, setIsLogged } = useGlobalContext();
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -25,6 +27,9 @@ const SignUp = () => {
     setSubmitting(true);
     try {
       const result = await createUser(form.email, form.password, form.username);
+      setUser(result);
+      setIsLogged(true);
+
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -36,12 +41,18 @@ const SignUp = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
-        <View className="w-full justify-center min-h-[85vh] px-4 my-6">
+        <View
+          className="w-full flex justify-center h-full px-4 my-6"
+          style={{
+            minHeight: Dimensions.get("window").height - 100,
+          }}
+        >
           <Image
             source={images.logo}
             resizeMode="contain"
-            className="w-[115px] h-[35px]"
+            className="w-[115px] h-[34px]"
           />
+
           <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
             Sign Up to Aora
           </Text>
@@ -75,7 +86,7 @@ const SignUp = () => {
             isLoading={isSubmitting}
           />
 
-          <View className="justify-center pt-5 flex-row gap-2">
+          <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
               Have an account already?
             </Text>
