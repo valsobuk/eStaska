@@ -62,7 +62,7 @@ export async function createUser(email, password, username) {
   } catch (error) {
     throw new Error(error);
   }
-};
+}
 
 // Sign In
 export async function signIn(email, password) {
@@ -73,9 +73,6 @@ export async function signIn(email, password) {
   } catch (error) {
     throw new Error(error);
   }
-}
-
-
 }
 
 // Upload File

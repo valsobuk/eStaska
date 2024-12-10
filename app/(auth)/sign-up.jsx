@@ -54,7 +54,7 @@ const SignUp = () => {
           />
 
           <FormField
-            title="Email"
+            title="email"
             value={form.email}
             handleChangeText={(e) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
@@ -62,14 +62,14 @@ const SignUp = () => {
           />
 
           <FormField
-            title="Password"
+            title="password"
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e })}
             otherStyles="mt-7"
           />
 
           <CustomButton
-            title="Sign Up"
+            title="sign Up"
             handlePress={submit}
             containerStyles="mt-7"
             isLoading={isSubmitting}

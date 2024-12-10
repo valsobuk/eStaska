@@ -7,11 +7,30 @@ import FormField from "../../components/FormField";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import { Link } from "expo-router";
+import { signIn } from "../../lib/appwrite";
+import { Alert } from "react-native";
+import { router } from "expo-router";
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: "", password: "" });
-  const submit = () => {};
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submit = async () => {
+    if (form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please fill in all fields");
+    }
+
+    setIsSubmitting(true);
+    try {
+      await signIn(form.email, form.password);
+      router.replace("/home");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
@@ -44,6 +63,7 @@ const SignIn = () => {
             title="Sign-in"
             handlePress={submit}
             containerStyles="mt-7"
+            isLoading={isSubmitting}
           ></CustomButton>
 
           <View className="justify-center pt-5 flex-row gap-2">
