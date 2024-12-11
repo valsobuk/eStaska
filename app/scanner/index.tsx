@@ -50,9 +50,10 @@ export default function Home() {
             qrLock.current = true;
 
             const parsedData = JSON.parse(data);
-            const { name, surname } = parsedData;
+            console.log(parsedData);
+            const { name, surname, firm } = parsedData;
 
-            router.push(`../form?name=${name}&surname=${surname}`);
+            router.push(`./home?name=${name}&surname=${surname}`);
 
             setTimeout(() => {
               qrLock.current = false;
