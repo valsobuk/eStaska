@@ -16,83 +16,48 @@ import { Redirect, router } from "expo-router";
 import { Pressable } from "react-native";
 import { useCameraPermissions } from "expo-camera";
 import { useNavigation } from "expo-router";
+import SwitchSelector from "react-native-switch-selector";
+import { useState } from "react";
+import { TouchableOpacity } from "react-native";
 
 export default function App() {
-  const [permission, requestPermission] = useCameraPermissions();
-  const navigation = useNavigation();
-
-  const handlePress = async () => {
-    if (!permission || !permission.granted) {
-      const result = await requestPermission();
-      if (!result.granted) {
-        Alert.alert(
-          "Permission Denied",
-          "Camera access is required to scan codes."
-        );
-        return;
-      }
-    }
-    router.push("/scanner");
-  };
-
-  const animatedValue = React.useRef(new Animated.Value(0)).current;
-
-  const startAnimation = (toValue) => {
-    Animated.timing(animatedValue, {
-      toValue,
-      duration: 400,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const left = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["2%", "50%"],
-    extrapolate: "clamp",
-  });
-
-  const scale = animatedValue.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [1, 0.9, 1],
-    extrapolate: "clamp",
-  });
   return (
     <SafeAreaView className=" h-full">
+      <StatusBar hidden={false} />
       <ImageBackground source={require("../assets/gplay.png")}>
         <ScrollView contentContainerStyle={{ height: "100%" }}>
           <View className="w-full px-4 flex flex-1">
-            <View className="relative pb-16 ">
+            <View className="relative pb-12 ">
               <Text className="text-4xl font-bold mt-5 text-center text-[#344E41] ">
                 eStaska
               </Text>
             </View>
-
-            <View style={styles.containerSWAG}>
-              <View style={styles.sliderContainer}>
-                <Animated.View style={[styles.slider, { left }]} />
-                <Pressable
-                  style={styles.clickableArea}
-                  onPress={startAnimation.bind(null, 0)}
-                >
-                  <Animated.Text
-                    style={[styles.sliderText, { transform: [{ scale }] }]}
-                  >
-                    PRED JAZDOU
-                  </Animated.Text>
-                </Pressable>
-                <Pressable
-                  style={styles.clickableArea}
-                  onPress={startAnimation.bind(null, 1)}
-                >
-                  <Animated.Text
-                    style={[styles.sliderText, { transform: [{ scale }] }]}
-                  >
-                    PO JAZDE
-                  </Animated.Text>
-                </Pressable>
-              </View>
-            </View>
+            <SwitchSelector
+              initial={0}
+              onPress={(value) => this.setState({ gender: value })}
+              textColor="black" //'#7a44cf'
+              selectedColor="white"
+              buttonColor="#344E41"
+              borderColor="#344E41"
+              hasPadding
+              options={[
+                {
+                  label: "PRED JAZDOU",
+                  value: "f",
+                },
+                {
+                  label: "PO JAZDE",
+                  value: "m",
+                },
+              ]}
+              testID="gender-switch-selector"
+              accessibilityLabel="gender-switch-selector"
+              borderRadius={10}
+              bold
+              fontSize={16}
+              valuePadding={-1}
+              height={45}
+            />
 
             <View
               style={{
@@ -103,6 +68,7 @@ export default function App() {
                 borderColor: "black",
                 borderStyle: "dashed",
                 zIndex: 0,
+                marginTop: 40,
               }}
             >
               <View
@@ -117,41 +83,76 @@ export default function App() {
                 }}
               />
             </View>
-            <Text style={styles.header} className="ml-2 mt-10">
-              Ako začať:
-            </Text>
-            <Text className="ml-2" style={styles.body}>
-              1. Stlačte tlačidlo <Text style={styles.bold}>Skenovať</Text> na
-              spustenie procesu.
-            </Text>
-            <Text className="ml-2" style={styles.body}>
-              2. Po dokončení skenovania vás aplikácia automaticky presmeruje do
-              sekcie, kde môžete:
-            </Text>
-            <View className="pb-5" style={styles.bulletContainer}>
-              <Text style={styles.bullet}>
-                •{" "}
-                <Text style={styles.body}>
-                  Zaznamenávať najazdené kilometre
+
+            <View className="  flex flex-row justify-between items-center mt-16 mb-8c bg-white border border-[#344E41] rounded-xl h-[17%]">
+              <View className="flex-none justify-center items-center w-2/3">
+                <Text className="text-2xl font-medium">STAV KILOMETROV</Text>
+                <Text className="text-2xl text-[#344E41] font-medium ">
+                  PRED JAZDOU
                 </Text>
-              </Text>
-              <Text style={styles.bullet}>
-                • <Text style={styles.body}>Evidovať tankovanie</Text>
-              </Text>
+                <TouchableOpacity className=" mt-4 justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
+                  <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-1/3">
+                <Image
+                  source={require("../assets/icons/speedometer-icon.png")}
+                  className="w-[80px] h-[80px] self-center"
+                  resizeMode="contain"
+                ></Image>
+              </View>
+            </View>
+
+            <View className="  flex flex-row justify-between items-center mt-16 mb-8c bg-white border border-[#344E41] rounded-xl h-[17%]">
+              <View className="flex-none justify-center items-center w-2/3">
+                <Text className="text-2xl font-medium">STAV NÁDRŽE</Text>
+                <Text className="text-2xl text-[#344E41] font-medium ">
+                  PRED JAZDOU
+                </Text>
+                <TouchableOpacity className=" mt-4 justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
+                  <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-1/3">
+                <Image
+                  source={require("../assets/icons/gas-pump-icon.png")}
+                  className="w-[80px] h-[80px] self-center"
+                  resizeMode="contain"
+                ></Image>
+              </View>
+            </View>
+
+            <View
+              style={{
+                height: 1,
+                width: "100%",
+                borderRadius: 1,
+                borderWidth: 1,
+                borderColor: "black",
+                borderStyle: "dashed",
+                zIndex: 0,
+                marginTop: 40,
+              }}
+            >
+              <View
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  bottom: 0,
+                  width: "100%",
+                  height: 1,
+                  backgroundColor: "white",
+                  zIndex: 1,
+                }}
+              />
             </View>
 
             <View style={{ gap: 20, padding: 20 }}>
-              <Pressable
-                onPress={handlePress}
-                style={[
-                  styles.ourbutton,
-                  {
-                    backgroundColor: permission?.granted ? "#344E41" : "gray",
-                  },
-                ]}
-              >
+              <Pressable className="w-full min-h-5">
                 <Text className="text-white font-psemibold text-lg">
-                  {permission?.granted ? "SKENOVAŤ" : "Požiadať o povolenie"}
+                  ODOSLAŤ
                 </Text>
               </Pressable>
             </View>
@@ -162,74 +163,3 @@ export default function App() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f9f9f9",
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  body: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  bold: {
-    fontWeight: "bold",
-  },
-  bulletContainer: {
-    marginTop: 5,
-    marginLeft: 10,
-  },
-  bullet: {
-    fontSize: 16,
-    marginBottom: 3,
-  },
-
-  ourbutton: {
-    borderRadius: 12, // 'rounded-xl' for large radius (adjust as necessary)
-    minHeight: 62, // 'min-h-[62px]'
-    justifyContent: "center", // 'justify-center'
-    alignItems: "center", // 'items-center'
-    width: "100%",
-    marginTop: "7%",
-  },
-
-  containerSWAG: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sliderContainer: {
-    width: "100%",
-    height: 50,
-    borderRadius: 10,
-    flexDirection: "row",
-    padding: "-50px",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "black",
-  },
-  clickableArea: {
-    width: "50%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sliderText: {
-    fontSize: 17,
-    fontWeight: "500",
-  },
-  slider: {
-    position: "absolute",
-    width: "50%",
-    height: "100%",
-    borderRadius: 10,
-    backgroundColor: "#f4f4f4",
-  },
-});
