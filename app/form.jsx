@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Animated, Easing } from "react-native";
+import { Animated, Button, Easing } from "react-native";
 import {
   StyleSheet,
   Image,
@@ -19,8 +19,12 @@ import { useNavigation } from "expo-router";
 import SwitchSelector from "react-native-switch-selector";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import { Modal } from "../components/Modal";
+import { TextInput } from "react-native";
 
 export default function App() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <SafeAreaView className=" h-full">
       <StatusBar hidden={false} />
@@ -32,7 +36,7 @@ export default function App() {
                 eStaska
               </Text>
             </View>
-            <SwitchSelector
+            {/*  <SwitchSelector
               initial={0}
               onPress={(value) => this.setState({ gender: value })}
               textColor="black" //'#7a44cf'
@@ -54,10 +58,10 @@ export default function App() {
               accessibilityLabel="gender-switch-selector"
               borderRadius={10}
               bold
-              fontSize={16}
+              fontSize={17}
               valuePadding={-1}
-              height={45}
-            />
+              height={50}
+            />}
 
             <View
               style={{
@@ -80,17 +84,17 @@ export default function App() {
                   height: 1,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}
+                }
               />
-            </View>
+            </View>*/}
 
-            <View className="  flex flex-row justify-between items-center mt-16 mb-8c bg-white border border-[#344E41] rounded-xl h-[17%]">
-              <View className="flex-none justify-center items-center w-2/3">
+            <View className="  flex flex-row justify-between items-center mt-16 mb-8 bg-white border border-[#344E41] rounded-xl h-[16%]">
+              <View className="flex-none justify-center items-center w-2/3 ">
                 <Text className="text-2xl font-medium">STAV KILOMETROV</Text>
-                <Text className="text-2xl text-[#344E41] font-medium ">
+                <Text className="text-2xl -mt-1 mb-3 text-[#344E41] font-medium ">
                   PRED JAZDOU
                 </Text>
-                <TouchableOpacity className=" mt-4 justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
+                <TouchableOpacity className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
                   <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
                 </TouchableOpacity>
               </View>
@@ -104,13 +108,16 @@ export default function App() {
               </View>
             </View>
 
-            <View className="  flex flex-row justify-between items-center mt-16 mb-8c bg-white border border-[#344E41] rounded-xl h-[17%]">
+            <View className="  flex flex-row justify-between items-center mt-8 mb-8c bg-white border border-[#344E41] rounded-xl h-[16%]">
               <View className="flex-none justify-center items-center w-2/3">
-                <Text className="text-2xl font-medium">STAV NÁDRŽE</Text>
-                <Text className="text-2xl text-[#344E41] font-medium ">
+                <Text className="text-2xl  font-medium">STAV NÁDRŽE</Text>
+                <Text className="text-2xl -mt-1 mb-3  text-[#344E41] font-medium ">
                   PRED JAZDOU
                 </Text>
-                <TouchableOpacity className=" mt-4 justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
+                <TouchableOpacity
+                  onPress={() => setModalOpen(true)}
+                  className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg"
+                >
                   <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
                 </TouchableOpacity>
               </View>
@@ -149,12 +156,33 @@ export default function App() {
               />
             </View>
 
-            <View style={{ gap: 20, padding: 20 }}>
-              <Pressable className="w-full min-h-5">
-                <Text className="text-white font-psemibold text-lg">
+            <View style={{ gap: 10, padding: 10 }}>
+              <Pressable className=" mt-8 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl ">
+                <Text className="text-white font-psemibold text-xl text-center">
                   ODOSLAŤ
                 </Text>
               </Pressable>
+
+              <Modal isOpen={modalOpen}>
+                <View className="w-[90%] bg-white rounded-xl border h-64 relative p-4">
+                  <Text className="text-2xl font-semibold ">
+                    ZADAJTE KILOMETRE NA{" "}
+                    <Text className="text-[#344E41]">TACHOMETRI</Text>:
+                  </Text>
+                  <TextInput className=" mt-5 border rounded-lg border-[#d2d2d2] w-full h-20"></TextInput>
+
+                  <Pressable
+                    className="bg-[#292D32] h-12 rounded-lg justify-center absolute bottom-2 self-center w-full"
+                    onPress={() => {
+                      setModalOpen(false);
+                    }}
+                  >
+                    <Text className="text-center text-white text-lg font-medium">
+                      POTVRDIŤ
+                    </Text>
+                  </Pressable>
+                </View>
+              </Modal>
             </View>
           </View>
         </ScrollView>
