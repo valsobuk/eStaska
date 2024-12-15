@@ -25,6 +25,22 @@ import { TextInput } from "react-native";
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [text, setText] = useState("");
+  const [activeModal, setActiveModal] = useState(null); // Tracks which button opened the modal
+
+  const [kilometre, setKilometre] = useState("");
+
+  const handleInputChange = (value, type) => {
+    // Allow only numbers and a maximum of 4 characters
+    if (/^\d*$/.test(value) && value.length <= 4) {
+      if (type === "text") {
+        setText(value);
+      } else if (type === "kilometre") {
+        setKilometre(value);
+      }
+    }
+  };
+
   return (
     <SafeAreaView className=" h-full">
       <StatusBar hidden={false} />
@@ -62,6 +78,41 @@ export default function App() {
               valuePadding={-1}
               height={50}
             />}
+            */}
+
+            <View className=" flex-row h-[9%] justify-center mt-5 ">
+              <View className=" w-48  flex flex-row justify-between items-center bg-white border border-[#344E41] rounded-xl mr-5 ">
+                <View className="flex-none justify-center items-center w-[40%]">
+                  <Image
+                    source={require("../assets/icons/speedometer-icon.png")}
+                    className="w-[45px] h-[45px] self-center"
+                    resizeMode="contain"
+                  ></Image>
+                </View>
+
+                <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[60%]">
+                  <Text className="text-2xl font-medium">
+                    {kilometre ? kilometre : "---"} <Text>KM</Text>
+                  </Text>
+                </View>
+              </View>
+
+              <View className=" w-48  flex flex-row justify-between items-center bg-white border border-[#344E41] rounded-xl">
+                <View className="flex-none justify-center items-center w-[40%]">
+                  <Image
+                    source={require("../assets/icons/gas-pump-icon.png")}
+                    className="w-[45px] h-[45px] self-center"
+                    resizeMode="contain"
+                  ></Image>
+                </View>
+
+                <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[60%]">
+                  <Text className="text-2xl font-medium">
+                    {text ? text : "---"} <Text>L</Text>
+                  </Text>
+                </View>
+              </View>
+            </View>
 
             <View
               style={{
@@ -84,9 +135,9 @@ export default function App() {
                   height: 1,
                   backgroundColor: "white",
                   zIndex: 1,
-                }
+                }}
               />
-            </View>*/}
+            </View>
 
             <View className="  flex flex-row justify-between items-center mt-16 mb-8 bg-white border border-[#344E41] rounded-xl h-[16%]">
               <View className="flex-none justify-center items-center w-2/3 ">
@@ -94,7 +145,13 @@ export default function App() {
                 <Text className="text-2xl -mt-1 mb-3 text-[#344E41] font-medium ">
                   PRED JAZDOU
                 </Text>
-                <TouchableOpacity className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg">
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveModal("kilometre");
+                    setModalOpen(true);
+                  }}
+                  className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg"
+                >
                   <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
                 </TouchableOpacity>
               </View>
@@ -115,7 +172,10 @@ export default function App() {
                   PRED JAZDOU
                 </Text>
                 <TouchableOpacity
-                  onPress={() => setModalOpen(true)}
+                  onPress={() => {
+                    setActiveModal("text");
+                    setModalOpen(true);
+                  }}
                   className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg"
                 >
                   <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
@@ -165,12 +225,28 @@ export default function App() {
 
               <Modal isOpen={modalOpen}>
                 <View className="w-[90%] bg-white rounded-xl border h-64 relative p-4">
-                  <Text className="text-2xl font-semibold ">
-                    ZADAJTE KILOMETRE NA{" "}
-                    <Text className="text-[#344E41]">TACHOMETRI</Text>:
+                  <Text className="text-2xl font-semibold">
+                    {activeModal === "kilometre"
+                      ? "ZADAJTE STAV KILOMETROV"
+                      : "ZADAJTE POČET NATANKOVANÝCH LITROV"}{" "}
+                    <Text className="text-[#344E41]">
+                      {activeModal === "kilometre" ? "KM" : "L"}
+                    </Text>
+                    :
                   </Text>
-                  <TextInput className=" mt-5 border rounded-lg border-[#d2d2d2] w-full h-20"></TextInput>
-
+                  <TextInput
+                    placeholder={
+                      activeModal === "kilometre"
+                        ? "Stav kilometrov..."
+                        : "Počet litrov..."
+                    }
+                    value={activeModal === "kilometre" ? kilometre : text}
+                    onChangeText={(value) =>
+                      handleInputChange(value, activeModal)
+                    }
+                    className="mt-5 border rounded-lg border-[#d2d2d2] w-full h-20"
+                    keyboardType="numeric"
+                  />
                   <Pressable
                     className="bg-[#292D32] h-12 rounded-lg justify-center absolute bottom-2 self-center w-full"
                     onPress={() => {
