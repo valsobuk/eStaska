@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../constants";
+
 import { Redirect, router } from "expo-router";
 import { Pressable } from "react-native";
 import { useCameraPermissions } from "expo-camera";

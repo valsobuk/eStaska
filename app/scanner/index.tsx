@@ -53,7 +53,7 @@ export default function Home() {
             console.log(parsedData);
             const { name, surname, firm } = parsedData;
 
-            router.push(`./home?name=${name}&surname=${surname}`);
+            router.push(`../form?name=${name}&surname=${surname}`);
 
             setTimeout(() => {
               qrLock.current = false;
