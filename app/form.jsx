@@ -25,18 +25,21 @@ import { TextInput } from "react-native";
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [text, setText] = useState("");
+  const [spotreba, setSpotreba] = useState("");
   const [activeModal, setActiveModal] = useState(null); // Tracks which button opened the modal
 
   const [kilometre, setKilometre] = useState("");
+  const [litre, setLitre] = useState("");
 
   const handleInputChange = (value, type) => {
     // Allow only numbers and a maximum of 4 characters
     if (/^\d*$/.test(value) && value.length <= 4) {
-      if (type === "text") {
-        setText(value);
+      if (type === "spotreba") {
+        setSpotreba(value);
       } else if (type === "kilometre") {
         setKilometre(value);
+      } else if (type === "litre") {
+        setLitre(value);
       }
     }
   };
@@ -80,35 +83,51 @@ export default function App() {
             />}
             */}
 
-            <View className=" flex-row h-[9%] justify-center mt-5 ">
-              <View className=" w-48  flex flex-row justify-between items-center bg-white border border-[#344E41] rounded-xl mr-5 ">
-                <View className="flex-none justify-center items-center w-[40%]">
+            <View className=" flex-row h-[9%] justify-center mb-8 ">
+              <View className=" w-32 h-32   flex flex-column justify-between items-center bg-white border border-[#344E41] rounded-xl mr-5 ">
+                <View className="flex-none mt-1 justify-center items-center">
                   <Image
-                    source={require("../assets/icons/speedometer-icon.png")}
+                    source={require("../assets/icons/download-speed.png")}
                     className="w-[45px] h-[45px] self-center"
                     resizeMode="contain"
                   ></Image>
                 </View>
 
-                <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[60%]">
+                <View className=" flex-none border-t w-full border-dashed justify-center items-center h-[50%]">
                   <Text className="text-2xl font-medium">
                     {kilometre ? kilometre : "---"} <Text>KM</Text>
                   </Text>
                 </View>
               </View>
 
-              <View className=" w-48  flex flex-row justify-between items-center bg-white border border-[#344E41] rounded-xl">
-                <View className="flex-none justify-center items-center w-[40%]">
+              <View className=" w-32 h-32   flex flex-column justify-between items-center bg-white border border-[#344E41] rounded-xl mr-5 ">
+                <View className="flex-none mt-2 justify-center items-center">
                   <Image
                     source={require("../assets/icons/gas-pump-icon.png")}
+                    className="w-[40px] h-[40px] self-center"
+                    resizeMode="contain"
+                  ></Image>
+                </View>
+
+                <View className=" flex-none border-t w-full border-dashed justify-center items-center h-[50%]">
+                  <Text className="text-2xl font-medium">
+                    {litre ? litre : "---"} <Text>L</Text>
+                  </Text>
+                </View>
+              </View>
+
+              <View className=" w-32 h-32   flex flex-column justify-between items-center bg-white border border-[#344E41] rounded-xl ">
+                <View className="flex-none mt-1 justify-center items-center">
+                  <Image
+                    source={require("../assets/icons/gas-tank.png")}
                     className="w-[45px] h-[45px] self-center"
                     resizeMode="contain"
                   ></Image>
                 </View>
 
-                <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[60%]">
+                <View className=" flex-none border-t w-full border-dashed justify-center items-center h-[50%]">
                   <Text className="text-2xl font-medium">
-                    {text ? text : "---"} <Text>L</Text>
+                    {spotreba ? spotreba : "---"} <Text>L</Text>
                   </Text>
                 </View>
               </View>
@@ -139,12 +158,12 @@ export default function App() {
               />
             </View>
 
-            <View className="  flex flex-row justify-between items-center mt-16 mb-8 bg-white border border-[#344E41] rounded-xl h-[16%]">
-              <View className="flex-none justify-center items-center w-2/3 ">
-                <Text className="text-2xl font-medium">STAV KILOMETROV</Text>
-                <Text className="text-2xl -mt-1 mb-3 text-[#344E41] font-medium ">
-                  PRED JAZDOU
+            <View className="  flex flex-row justify-between items-center mt-8 mb-8 bg-white border border-[#344E41] rounded-xl h-[14%]">
+              <View className="flex-none justify-center items-center w-[70%] ">
+                <Text className="text-2xl mb-3 font-medium">
+                  STAV KILOMETROV
                 </Text>
+
                 <TouchableOpacity
                   onPress={() => {
                     setActiveModal("kilometre");
@@ -156,24 +175,24 @@ export default function App() {
                 </TouchableOpacity>
               </View>
 
-              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-1/3">
+              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[30%]">
                 <Image
-                  source={require("../assets/icons/speedometer-icon.png")}
-                  className="w-[80px] h-[80px] self-center"
+                  source={require("../assets/icons/download-speed.png")}
+                  className="w-[75px] h-[75px] self-center"
                   resizeMode="contain"
                 ></Image>
               </View>
             </View>
 
-            <View className="  flex flex-row justify-between items-center mt-8 mb-8c bg-white border border-[#344E41] rounded-xl h-[16%]">
-              <View className="flex-none justify-center items-center w-2/3">
-                <Text className="text-2xl  font-medium">STAV NÁDRŽE</Text>
-                <Text className="text-2xl -mt-1 mb-3  text-[#344E41] font-medium ">
-                  PRED JAZDOU
+            <View className="  flex flex-row justify-between items-center  bg-white border border-[#344E41] rounded-xl h-[14%]">
+              <View className="flex-none justify-center items-center w-[70%]">
+                <Text className="text-2xl mb-3  font-medium">
+                  NATANKOVANÉ LITRE
                 </Text>
+
                 <TouchableOpacity
                   onPress={() => {
-                    setActiveModal("text");
+                    setActiveModal("litre");
                     setModalOpen(true);
                   }}
                   className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg"
@@ -182,10 +201,34 @@ export default function App() {
                 </TouchableOpacity>
               </View>
 
-              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-1/3">
+              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[30%]">
                 <Image
                   source={require("../assets/icons/gas-pump-icon.png")}
-                  className="w-[80px] h-[80px] self-center"
+                  className="w-[70px] h-[70px] self-center"
+                  resizeMode="contain"
+                ></Image>
+              </View>
+            </View>
+
+            <View className="  flex flex-row justify-between items-center mt-8 mb-8c bg-white border border-[#344E41] rounded-xl h-[14%]">
+              <View className="flex-none justify-center items-center w-[70%]">
+                <Text className="text-2xl mb-3  font-medium">STAV NÁDRŽE</Text>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setActiveModal("spotreba");
+                    setModalOpen(true);
+                  }}
+                  className=" justify-center items-center w-[90%] bg-[#344E41] border-black border h-12 rounded-lg"
+                >
+                  <Text className="text-white text-xl font-medium">PRIDAŤ</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View className=" flex-none border-l border-dashed justify-center items-center h-full w-[30%]">
+                <Image
+                  source={require("../assets/icons/gas-tank.png")}
+                  className="w-[75px] h-[75px] self-center"
                   resizeMode="contain"
                 ></Image>
               </View>
@@ -200,7 +243,7 @@ export default function App() {
                 borderColor: "black",
                 borderStyle: "dashed",
                 zIndex: 0,
-                marginTop: 40,
+                marginTop: 25,
               }}
             >
               <View
@@ -217,20 +260,26 @@ export default function App() {
             </View>
 
             <View style={{ gap: 10, padding: 10 }}>
-              <Pressable className=" mt-8 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl ">
+              <Pressable className=" mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl ">
                 <Text className="text-white font-psemibold text-xl text-center">
                   ODOSLAŤ
                 </Text>
               </Pressable>
 
               <Modal isOpen={modalOpen}>
-                <View className="w-[90%] bg-white rounded-xl border h-64 relative p-4">
+                <View className="w-[90%] bg-white rounded-xl border h-72 relative p-4">
                   <Text className="text-2xl font-semibold">
                     {activeModal === "kilometre"
                       ? "ZADAJTE STAV KILOMETROV"
-                      : "ZADAJTE POČET NATANKOVANÝCH LITROV"}{" "}
+                      : activeModal === "litre"
+                      ? "ZADAJTE POČET NATANKOVANÝCH LITROV"
+                      : "ZADAJTE SPOTREBU ZA TENTO DEŇ"}{" "}
                     <Text className="text-[#344E41]">
-                      {activeModal === "kilometre" ? "KM" : "L"}
+                      {activeModal === "kilometre"
+                        ? "KM"
+                        : activeModal === "litre"
+                        ? "L"
+                        : "L"}
                     </Text>
                     :
                   </Text>
@@ -238,9 +287,17 @@ export default function App() {
                     placeholder={
                       activeModal === "kilometre"
                         ? "Stav kilometrov..."
-                        : "Počet litrov..."
+                        : activeModal === "litre"
+                        ? "Počet litrov..."
+                        : "Spotreba..."
                     }
-                    value={activeModal === "kilometre" ? kilometre : text}
+                    value={
+                      activeModal === "kilometre"
+                        ? kilometre
+                        : activeModal === "litre"
+                        ? litre
+                        : spotreba
+                    }
                     onChangeText={(value) =>
                       handleInputChange(value, activeModal)
                     }
@@ -248,7 +305,7 @@ export default function App() {
                     keyboardType="numeric"
                   />
                   <Pressable
-                    className="bg-[#292D32] h-12 rounded-lg justify-center absolute bottom-2 self-center w-full"
+                    className="bg-[#292D32] h-16 rounded-lg justify-center absolute bottom-2 self-center w-full"
                     onPress={() => {
                       setModalOpen(false);
                     }}
