@@ -273,7 +273,7 @@ export default function App() {
                       ? "ZADAJTE STAV KILOMETROV"
                       : activeModal === "litre"
                       ? "ZADAJTE POČET NATANKOVANÝCH LITROV"
-                      : "ZADAJTE SPOTREBU ZA TENTO DEŇ"}{" "}
+                      : "ZADAJTE STAV NÁDRŽE ZA TENTO DEŇ"}{" "}
                     <Text className="text-[#344E41]">
                       {activeModal === "kilometre"
                         ? "KM"
