@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Animated, Button, Easing } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Image,
@@ -11,16 +12,16 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { Redirect, router } from "expo-router";
 import { Pressable } from "react-native";
 import { useCameraPermissions } from "expo-camera";
 import { useNavigation } from "expo-router";
 import SwitchSelector from "react-native-switch-selector";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Modal } from "../components/Modal";
 import { TextInput } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,6 +44,71 @@ export default function App() {
       }
     }
   };
+
+  const save = async () => {
+    try {
+      await AsyncStorage.setItem("kilometre", kilometre);
+      await AsyncStorage.setItem("litre", litre);
+      await AsyncStorage.setItem("spotreba", spotreba);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const load = async () => {
+    try {
+      const kilometre = await AsyncStorage.getItem("kilometre");
+      const litre = await AsyncStorage.getItem("litre");
+      const spotreba = await AsyncStorage.getItem("spotreba");
+
+      if (kilometre) {
+        setKilometre(kilometre);
+      }
+
+      if (litre) {
+        setLitre(litre);
+      }
+
+      if (spotreba) {
+        setSpotreba(spotreba);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const remove = async () => {
+    try {
+      await AsyncStorage.removeItem("kilometre");
+      await AsyncStorage.removeItem("litre");
+      await AsyncStorage.removeItem("spotreba");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setKilometre("");
+      setLitre("");
+      setSpotreba("");
+    }
+  };
+
+  const route = useRoute();
+  const fullPath = route.path || ""; // Assuming the path is available
+
+  useEffect(() => {
+    // Extract query parameters
+    const queryString = fullPath.split("?")[1];
+    const params = new URLSearchParams(queryString);
+
+    const vodic = params.get("name");
+    const id_auta = params.get("id_auta");
+
+    console.log("Name:", vodic);
+    console.log("Surname:", id_auta);
+  }, []);
 
   return (
     <SafeAreaView className=" h-full">
@@ -260,29 +326,36 @@ export default function App() {
             </View>
 
             <View style={{ gap: 10, padding: 10 }}>
-              <Pressable className=" mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl ">
+              <TouchableOpacity
+                onPress={() => remove()}
+                className=" mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl "
+              >
                 <Text className="text-white font-psemibold text-xl text-center">
                   ODOSLAŤ
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
 
               <Modal isOpen={modalOpen}>
-                <View className="w-[90%] bg-white rounded-xl border h-72 relative p-4">
-                  <Text className="text-2xl font-semibold">
-                    {activeModal === "kilometre"
-                      ? "ZADAJTE STAV KILOMETROV"
-                      : activeModal === "litre"
-                      ? "ZADAJTE POČET NATANKOVANÝCH LITROV"
-                      : "ZADAJTE STAV NÁDRŽE ZA TENTO DEŇ"}{" "}
-                    <Text className="text-[#344E41]">
-                      {activeModal === "kilometre"
-                        ? "KM"
-                        : activeModal === "litre"
-                        ? "L"
-                        : "L"}
-                    </Text>
-                    :
-                  </Text>
+                <View className="w-[90%] bg-white rounded-xl border h-max relative p-4">
+                  <View className="flex-row">
+                    <View className="w-[90%]">
+                      <Text className="text-2xl font-semibold">
+                        {activeModal === "kilometre"
+                          ? "ZADAJTE STAV KILOMETROV"
+                          : activeModal === "litre"
+                          ? "ZADAJTE POČET NATANKOVANÝCH LITROV"
+                          : "ZADAJTE STAV NÁDRŽE ZA TENTO DEŇ"}{" "}
+                        <Text className="text-[#344E41]">
+                          {activeModal === "kilometre"
+                            ? "KM"
+                            : activeModal === "litre"
+                            ? "L"
+                            : "L"}
+                        </Text>
+                        :
+                      </Text>
+                    </View>
+                  </View>
                   <TextInput
                     placeholder={
                       activeModal === "kilometre"
@@ -304,16 +377,38 @@ export default function App() {
                     className="mt-5 border rounded-lg border-[#d2d2d2] w-full h-20"
                     keyboardType="numeric"
                   />
-                  <Pressable
-                    className="bg-[#292D32] h-16 rounded-lg justify-center absolute bottom-2 self-center w-full"
-                    onPress={() => {
-                      setModalOpen(false);
-                    }}
-                  >
-                    <Text className="text-center text-white text-lg font-medium">
-                      POTVRDIŤ
-                    </Text>
-                  </Pressable>
+                  <View className="flex-row gap-3 ">
+                    <TouchableOpacity
+                      className="bg-[#292D32] h-16 mt-8 rounded-lg justify-center bottom-2  w-[75%] border"
+                      onPress={() => {
+                        setModalOpen(false);
+                        save();
+                      }}
+                    >
+                      <Text className="text-center text-white text-xl font-medium">
+                        POTVRDIŤ
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setModalOpen(false);
+                        if (activeModal === "kilometre") {
+                          setKilometre(""); // Clear the kilometre value
+                        } else if (activeModal === "litre") {
+                          setLitre(""); // Clear the litre value
+                        } else if (activeModal === "spotreba") {
+                          setSpotreba(""); // Clear the spotreba value
+                        }
+                      }}
+                      className="w-fit mt-8 bottom-2  "
+                    >
+                      <Image
+                        source={require("../assets/icons/close.png")}
+                        className="w-[76px] h-[76px] self-center flex-1"
+                        resizeMode="cover"
+                      ></Image>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </Modal>
             </View>
