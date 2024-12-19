@@ -22,6 +22,7 @@ import { TouchableOpacity } from "react-native";
 import { Modal } from "../components/Modal";
 import { TextInput } from "react-native";
 import { useRoute } from "@react-navigation/native";
+import { useGlobalSearchParams } from "expo-router";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -95,20 +96,8 @@ export default function App() {
     }
   };
 
-  const route = useRoute();
-  const fullPath = route.path || ""; // Assuming the path is available
-
-  useEffect(() => {
-    // Extract query parameters
-    const queryString = fullPath.split("?")[1];
-    const params = new URLSearchParams(queryString);
-
-    const vodic = params.get("name");
-    const id_auta = params.get("id_auta");
-
-    console.log("Name:", vodic);
-    console.log("Surname:", id_auta);
-  }, []);
+  const { name, id_auta } = useGlobalSearchParams();
+  console.log("ssssss " + name, id_auta);
 
   return (
     <SafeAreaView className=" h-full">
@@ -327,10 +316,45 @@ export default function App() {
 
             <View style={{ gap: 10, padding: 10 }}>
               <TouchableOpacity
-                onPress={() => remove()}
-                className=" mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl "
+                onPress={async () => {
+                  try {
+                    const response = await fetch(
+                      "https://your-server-endpoint.com/api/data",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          vodic: name,
+                          id_auta: id_auta,
+                          stav_kilometre: kilometre,
+                          tankovanie: litre,
+                          stav_nadrze: spotreba,
+                        }),
+                      }
+                    );
+
+                    if (response.ok) {
+                      const result = await response.json();
+                      console.log("Data sent successfully:", result);
+                      // Optionally clear fields or show a success message
+                      setKilometre("");
+                      setLitre("");
+                      setSpotreba("");
+                    } else {
+                      console.error(
+                        "Failed to send data:",
+                        response.statusText
+                      );
+                    }
+                  } catch (error) {
+                    console.error("Error while sending data:", error);
+                  }
+                }}
+                className="mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl"
               >
-                <Text className="text-white font-psemibold text-xl text-center">
+                <Text className="text-white font-semibold text-xl text-center">
                   ODOSLAŤ
                 </Text>
               </TouchableOpacity>
