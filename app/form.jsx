@@ -34,13 +34,13 @@ export default function App() {
   const [litre, setLitre] = useState("");
 
   const handleInputChange = (value, type) => {
-    // Allow only numbers and a maximum of 4 characters
-    if (/^\d*$/.test(value) && value.length <= 4) {
-      if (type === "spotreba") {
+    // Allow only numbers
+    if (/^\d*$/.test(value)) {
+      if (type === "spotreba" && value.length <= 4) {
         setSpotreba(value);
-      } else if (type === "kilometre") {
+      } else if (type === "kilometre" && value.length <= 7) {
         setKilometre(value);
-      } else if (type === "litre") {
+      } else if (type === "litre" && value.length <= 4) {
         setLitre(value);
       }
     }
@@ -319,16 +319,16 @@ export default function App() {
                 onPress={async () => {
                   try {
                     const response = await fetch(
-                      "https://your-server-endpoint.com/api/data",
+                      "https://staska.onrender.com/zamestnanci/staska",
                       {
                         method: "POST",
                         headers: {
                           "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
-                          vodic: name,
-                          id_auta: id_auta,
-                          stav_kilometre: kilometre,
+                          heslo_auta: "auto123",
+                          vodic: "peterbednar",
+                          stav_kilometre: "50100",
                           tankovanie: litre,
                           stav_nadrze: spotreba,
                         }),
@@ -342,6 +342,7 @@ export default function App() {
                       setKilometre("");
                       setLitre("");
                       setSpotreba("");
+                      remove();
                     } else {
                       console.error(
                         "Failed to send data:",
