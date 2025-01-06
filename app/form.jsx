@@ -27,6 +27,9 @@ import { useGlobalSearchParams } from "expo-router";
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const [spotreba, setSpotreba] = useState("");
   const [activeModal, setActiveModal] = useState(null); // Tracks which button opened the modal
 
@@ -98,6 +101,52 @@ export default function App() {
 
   const { name, id_auta } = useGlobalSearchParams();
   console.log("ssssss " + name, id_auta);
+
+  const showPopup = (message) => {
+    setModalMessage(message);
+    setModalVisible(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!kilometre || !litre || !spotreba) {
+      showPopup("Vyplňte všetky údaje."); // Show error if fields are empty
+      return;
+    }
+    try {
+      const response = await fetch(
+        "https://staska.onrender.com/zamestnanci/staska",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            heslo_auta: id_auta,
+            vodic: name,
+            stav_kilometre: kilometre,
+            tankovanie: litre,
+            stav_nadrze: spotreba,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Data sent successfully:", result);
+        // Optionally clear fields or show a success message
+        setKilometre("");
+        setLitre("");
+        setSpotreba("");
+        remove();
+        showPopup("Údaje boli úspešne odoslané.");
+      } else {
+        showPopup("Chyba pri odosielaní údajov.");
+        console.error("Failed to send data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Nastala chyba pri odosielaní údajov:", error);
+    }
+  };
 
   return (
     <SafeAreaView className=" h-full">
@@ -316,43 +365,7 @@ export default function App() {
 
             <View style={{ gap: 10, padding: 10 }}>
               <TouchableOpacity
-                onPress={async () => {
-                  try {
-                    const response = await fetch(
-                      "https://staska.onrender.com/zamestnanci/staska",
-                      {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          heslo_auta: "auto123",
-                          vodic: "peterbednar",
-                          stav_kilometre: "50100",
-                          tankovanie: litre,
-                          stav_nadrze: spotreba,
-                        }),
-                      }
-                    );
-
-                    if (response.ok) {
-                      const result = await response.json();
-                      console.log("Data sent successfully:", result);
-                      // Optionally clear fields or show a success message
-                      setKilometre("");
-                      setLitre("");
-                      setSpotreba("");
-                      remove();
-                    } else {
-                      console.error(
-                        "Failed to send data:",
-                        response.statusText
-                      );
-                    }
-                  } catch (error) {
-                    console.error("Error while sending data:", error);
-                  }
-                }}
+                onPress={handleSubmit}
                 className="mt-4 justify-center w-full min-h-5 border bg-[#292D32] h-[4.5rem] rounded-xl"
               >
                 <Text className="text-white font-semibold text-xl text-center">
@@ -424,6 +437,7 @@ export default function App() {
                         } else if (activeModal === "spotreba") {
                           setSpotreba(""); // Clear the spotreba value
                         }
+                        save();
                       }}
                       className="w-fit mt-8 bottom-2  "
                     >
@@ -432,6 +446,31 @@ export default function App() {
                         className="w-[76px] h-[76px] self-center flex-1"
                         resizeMode="cover"
                       ></Image>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+
+              <Modal visible={modalVisible}>
+                <View className="w-[90%] bg-white rounded-xl border h-max relative p-4">
+                  <View className="flex-row">
+                    <View className="w-[100%]">
+                      <Text className="text-3xl font-semibold text-center">
+                        PROSÍM VYPLŇTE VŠETKY ÚDAJE{" "}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View className="flex-row gap-3 ">
+                    <TouchableOpacity
+                      className="bg-[#292D32] h-16 mt-8 rounded-lg justify-center bottom-2  w-[100%] border"
+                      onPress={() => {
+                        setModalVisible(false);
+                      }}
+                    >
+                      <Text className="text-center text-white text-xl font-medium">
+                        ZATVORIŤ
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
