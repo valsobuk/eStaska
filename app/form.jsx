@@ -114,7 +114,7 @@ export default function App() {
     }
     try {
       const response = await fetch(
-        "https://staska.onrender.com/zamestnanci/staska",
+        "https://staska-9e6605580623.herokuapp.com/zamestnanci/staska",
         {
           method: "POST",
           headers: {
@@ -456,7 +456,7 @@ export default function App() {
                   <View className="flex-row">
                     <View className="w-[100%]">
                       <Text className="text-3xl font-semibold text-center">
-                        PROSÍM VYPLŇTE VŠETKY ÚDAJE{" "}
+                        {modalMessage}
                       </Text>
                     </View>
                   </View>
